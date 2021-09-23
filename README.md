@@ -1,6 +1,10 @@
-# Information
+# About
 
 This is a freelancing smart contract app which connects employer and freelancer. The contract allows employer to create a contract with a employer and create requests.
+
+[Project Source Link](https://bitnician.medium.com/solidity-smart-contract-tutorial-with-building-full-stack-dapp-part-1-introduction-65988e83b4a3)
+
+**Note:** *There is a small functionality difference between original code and my code. Article author has used price local variable to store the transaction balance, but it does not decrease automatically when freelancer decrease the money. In my case, I have used smart contract balance to store employer money, it is say more feasible and intuitive since you want to store money in smart contract. It helps in separating employer account from contract account, and throws error if employer tries to deduct from than available from contract.*
 
 ---
 
@@ -31,11 +35,12 @@ Your contract is deployed to local ganache blockchain.
 ---
 
 ## How to interect with contract variables
+
 - run: `truffle console` in terminal
 - Use `let contract = await Delance.deployed()` to get contract instance
 - Use `contract.employer()` to get value of employer
   - You can also get other values similarly. Just use the name of the variable instead of employer.
-  - **Note:** You can only get public values this way. Use getters for other values. 
+  - **Note:** You can only get public values this way. Use getters for other values.
 - You can also use `let employer = await contract.employer()` to store employer address in 'employer' variable and then run `employer` to access it.
 - To get the balance of smart contract, use `web3.eth.getBalance(contract.address)`
 - To get list of accounts, use `web3.eth.getAccounts()`
@@ -44,5 +49,7 @@ Your contract is deployed to local ganache blockchain.
   - Second argument of above function is used to send ethereum to smart contract. the default unit of transfer is wei. we are sending 1 eth above by using web3 library to convert 1 eth to wei.
   - Replace the address in from field with freelancer address. Without it, you will not be able to call the function since its freelancer only.
 
-## TO-DO:
-1. Write tests for the smart contract. Push them in a new branch.
+## To-Do
+
+1. Write tests for the smart contract.
+2. Push them in a new branch.
