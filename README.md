@@ -53,3 +53,7 @@ Your contract is deployed to local ganache blockchain.
 
 1. Write tests for the smart contract.
 2. Push them in a new branch.
+
+## Update
+
+1. Coded the test file with tests for all contract functions.

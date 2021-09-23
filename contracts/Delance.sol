@@ -7,13 +7,13 @@ contract Delance {
   // properties of freelancer-employee contract
   address payable public employer;
   address payable public freelancer;
-  uint public deadline; // time in solidity is measured using epoch seconds
-  uint public price;
+  uint public deadline; // deadline will start counting from time of uploading the block
 
   constructor (address payable _address, uint _deadline) payable {
+    require(_address != msg.sender, 'employer cannot hire himself');
     employer = payable(msg.sender);
     freelancer = _address;
-    deadline = _deadline;
+    deadline = block.timestamp + _deadline;
   }
 
   // this function is used if anyone wants to send ether to the contract.
@@ -24,7 +24,7 @@ contract Delance {
   // struct to store payment request of freelancer.
   struct Request {
     string title;
-    uint256 amount; // why uint256??
+    uint256 amount; // why uint256?? - same as uint, no difference
     bool locked;  // initialially request will be locked, employer will unlock it and transfer required ehther.
     bool paid;
   }
@@ -35,10 +35,13 @@ contract Delance {
     require(msg.sender == freelancer, 'only freelancer');
     _;
   }
+  
   event RequestCreated(string _title, uint256 _amount, bool locked, bool paid);
-
+  
   Request[] public requests;
+  
   function createRequest(string memory _title, uint256 _amount) public onlyFreelancer {
+    require(_amount>=0, 'amount should be >=0');  // should be handled by uint itself
     requests.push(Request(_title, _amount, true, false));
     emit RequestCreated(_title, _amount, true, false);
   }
@@ -57,9 +60,11 @@ contract Delance {
   // a request is unlocked and update UI accordingly.
   event RequestUnlocked(bool locked);
 
-  function unlockRequest(uint index) public onlyEmployer {
+  function unlockRequest(uint _index) public onlyEmployer {
+    require(_index < requests.length && _index>=0, "Invalid index");
+    
     // storage keyboard makes var "request" behaves as a pointer
-    Request storage request = requests[index];
+    Request storage request = requests[_index];
     require(request.locked == true, 'already unlocked');
     request.locked = false;
 
@@ -72,6 +77,7 @@ contract Delance {
   event RequestPaid(address payable freelancer, uint amount);
   
   function withdraw(uint _index) public onlyFreelancer {
+    require(_index < requests.length && _index>=0, "Invalid index");
     require(locked == false, 'contract locked/reentrant call');
     
     Request storage request = requests[_index];
